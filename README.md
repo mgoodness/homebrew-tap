@@ -1,5 +1,11 @@
 # mgoodness Tap
 
+## Formulae
+
+| Formula | Description | Upstream |
+| --- | --- | --- |
+| [kit](Formula/kit.rb) | Lightweight AI agent for coding | [mark3labs/kit](https://github.com/mark3labs/kit) |
+
 ## How do I install these formulae?
 
 `brew install mgoodness/tap/<formula>`
