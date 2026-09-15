@@ -6,9 +6,9 @@ class Kit < Formula
   license "MIT"
 
   bottle do
-    root_url "https://github.com/mgoodness/homebrew-tap/releases/download/kit-0.105"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "dbfe703a894d090aabb43cf0f03a6137a18aa7b7161ed8aab4f459331d4188d8"
-    sha256 cellar: :any,                 x86_64_linux: "36f9fb00aa320c5922227b47b34ade099f485348ee5ebbb7ebf29185aa78773a"
+    root_url "https://github.com/mgoodness/homebrew-tap/releases/download/kit-0.107"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "aee8c5f5f7e6fd07739ef740c138b656548660739728ff762463c4522abca642"
+    sha256 cellar: :any,                 x86_64_linux: "ec0059fa8a60589c3bd31f1c1f6611956952d48412093a32babf2eeb1a254a87"
   end
 
   depends_on "go" => :build
