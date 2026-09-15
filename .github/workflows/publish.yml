@@ -71,8 +71,11 @@ jobs:
             exit 0
           fi
 
-          author=$(gh pr view "$WORKFLOW_RUN_PULL_REQUEST" --repo "$GITHUB_REPOSITORY" \
-            --json author --jq '.author.login')
+          # Use the REST API (not `gh pr view`, which goes through GraphQL and
+          # reports this bot's login as "app/github-actions" instead of
+          # "github-actions[bot]") so the comparison below actually matches.
+          author=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$WORKFLOW_RUN_PULL_REQUEST" \
+            --jq '.user.login')
           if [[ "$author" != "github-actions[bot]" ]]
           then
             echo "Pull request #$WORKFLOW_RUN_PULL_REQUEST was not opened by auto-bump" \
