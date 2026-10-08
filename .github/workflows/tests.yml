@@ -58,3 +58,95 @@ jobs:
         with:
           name: bottles_${{ matrix.os }}
           path: '*.bottle.*'
+
+  generate-cask-matrix:
+    if: github.event_name == 'pull_request'
+    runs-on: macos-26
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      matrix: ${{ steps.generate-matrix.outputs.matrix }}
+    steps:
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@1e34f2e2acaa766b7efacb8c26352e6abbb023f9 # 2026.09.13.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          cask: true
+
+      - name: Generate cask CI matrix
+        id: generate-matrix
+        env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PULL_REQUEST_URL: ${{ github.event.pull_request.url }}
+        run: |
+          full_matrix=$(brew generate-cask-ci-matrix --url "$PULL_REQUEST_URL")
+          # Drop the tap-syntax entries that `generate-cask-ci-matrix` always
+          # includes: the `test-bot` job above already covers `--only-tap-syntax`.
+          cask_matrix=$(echo "$full_matrix" | jq -c '[.[] | select(.cask)]')
+          echo "matrix=$cask_matrix" >> "$GITHUB_OUTPUT"
+
+  test-casks:
+    needs: generate-cask-matrix
+    if: needs.generate-cask-matrix.outputs.matrix != '[]'
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
+    container: ${{ matrix.container || null }} # zizmor: ignore[unpinned-images]
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.generate-cask-matrix.outputs.matrix) }}
+    permissions:
+      contents: read
+    steps:
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@1e34f2e2acaa766b7efacb8c26352e6abbb023f9 # 2026.09.13.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          cask: true
+
+      - name: Run brew fetch --cask ${{ matrix.cask.token }}
+        id: fetch
+        run: brew fetch --cask --retry --force ${{ join(matrix.fetch_args, ' ') }} '${{ matrix.cask.path }}'
+        timeout-minutes: 30
+
+      - name: Run brew audit --cask ${{ matrix.cask.token }}
+        run: brew audit --cask ${{ join(matrix.audit_args, ' ') }} '${{ matrix.cask.token }}'
+        if: always() && steps.fetch.outcome == 'success'
+        timeout-minutes: 30
+
+      - name: Gather cask information
+        id: info
+        env:
+          CASK_PATH: ${{ matrix.cask.path }}
+        run: brew cask-ci info "$CASK_PATH"
+        if: always() && steps.fetch.outcome == 'success'
+
+      - name: Take snapshot of installed and running apps and services
+        id: snapshot
+        run: brew cask-ci snapshot
+        if: always() && steps.info.outcome == 'success'
+
+      - name: Run brew install --cask ${{ matrix.cask.token }}
+        id: install
+        run: brew install --cask '${{ matrix.cask.path }}'
+        if: >
+          always() && steps.info.outcome == 'success' &&
+          fromJSON(steps.info.outputs.macos_requirement_satisfied) &&
+          !matrix.skip_install
+        timeout-minutes: 30
+
+      - name: Check for missing zap paths
+        run: brew cask-ci zap-check '${{ matrix.cask.path }}'
+        if: always() && steps.install.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 10
+
+      - name: Run brew uninstall --cask ${{ matrix.cask.token }}
+        run: brew uninstall --cask --force --zap '${{ matrix.cask.path }}'
+        if: always() && steps.install.outcome == 'success' && !fromJSON(steps.info.outputs.manual_installer)
+        timeout-minutes: 30
+
+      - name: Compare installed and running apps and services with snapshot
+        run: brew cask-ci check '${{ matrix.cask.path }}'
+        if: always() && steps.snapshot.outcome == 'success' && steps.install.outcome == 'success'
