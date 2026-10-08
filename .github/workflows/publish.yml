@@ -119,8 +119,24 @@ jobs:
             brew pr-pull --debug --retain-bottle-dir --tap="$GITHUB_REPOSITORY" "$PULL_REQUEST"
           fi
 
-      - name: Generate build provenance
+      - name: Check for bottle artifacts
+        # Cask-only PRs (and formula PRs that don't need new bottles) leave
+        # `bottle_path` empty -- `brew pr-pull` logs "Skipping artifacts ...
+        # as the formulae don't need bottles" and moves on. Only attest when
+        # there's actually something to attest.
         if: steps.resolve.outputs.proceed == 'true'
+        id: check_bottles
+        env:
+          BOTTLE_PATH: ${{ steps.pull_bottles.outputs.bottle_path }}
+        run: |
+          if compgen -G "$BOTTLE_PATH"/*.tar.gz > /dev/null; then
+            echo "has_bottles=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_bottles=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate build provenance
+        if: steps.resolve.outputs.proceed == 'true' && steps.check_bottles.outputs.has_bottles == 'true'
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         with:
           subject-path: "${{ steps.pull_bottles.outputs.bottle_path }}/*.tar.gz"
