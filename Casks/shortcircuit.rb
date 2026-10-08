@@ -1,4 +1,4 @@
-cask "eve-shortcircuit" do
+cask "shortcircuit" do
   arch arm: "arm64", intel: "x86_64"
 
   version "2.2.0"

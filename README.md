@@ -10,7 +10,7 @@
 
 | Cask | Description | Upstream |
 | --- | --- | --- |
-| [eve-shortcircuit](Casks/eve-shortcircuit.rb) | Find shortest path using Tripwire and Eve data | [mgoodness/shortcircuit](https://github.com/mgoodness/shortcircuit) |
+| [shortcircuit](Casks/shortcircuit.rb) | Find shortest path using Tripwire and Eve data | [mgoodness/shortcircuit](https://github.com/mgoodness/shortcircuit) |
 
 ## How do I install these formulae?
 
