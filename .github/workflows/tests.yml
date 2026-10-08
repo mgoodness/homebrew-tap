@@ -62,6 +62,13 @@ jobs:
   generate-cask-matrix:
     if: github.event_name == 'pull_request'
     runs-on: macos-26
+    # `generate-cask-ci-matrix` loads casks from the tap's `Library/Taps`
+    # symlink that `setup-homebrew` creates for third-party taps; Homebrew's
+    # `forbid_packages_from_paths?` check otherwise rejects that path unless
+    # developer mode is on. `homebrew-cask`'s own `ci.yml` sets this for the
+    # same reason.
+    env:
+      HOMEBREW_DEVELOPER: 1
     permissions:
       contents: read
       pull-requests: read
@@ -96,6 +103,10 @@ jobs:
       fail-fast: false
       matrix:
         include: ${{ fromJSON(needs.generate-cask-matrix.outputs.matrix) }}
+    # See the comment on `generate-cask-matrix`: the same symlinked tap path
+    # needs developer mode for `fetch`/`audit`/`install`/`uninstall --cask`.
+    env:
+      HOMEBREW_DEVELOPER: 1
     permissions:
       contents: read
     steps:
