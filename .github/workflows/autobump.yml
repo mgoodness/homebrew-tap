@@ -52,7 +52,9 @@ jobs:
         run: brew bump --no-fork --open-pr --formulae --bump-synced --tap="$TAP_NAME"
 
   autobump-casks:
-    runs-on: ubuntu-latest
+    # Cask audit/checksum resolution needs a real macOS context; see
+    # `homebrew-cask`'s own autobump workflow, which does the same.
+    runs-on: macos-26
     permissions: {}
     steps:
       - name: Mint App token
