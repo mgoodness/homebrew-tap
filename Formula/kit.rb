@@ -1,8 +1,8 @@
 class Kit < Formula
   desc "Lightweight AI agent for coding"
   homepage "https://go-kit.dev/"
-  url "https://github.com/mark3labs/kit/archive/refs/tags/v0.124.1.tar.gz"
-  sha256 "b022f7716ee4ba3f480705b1854494a4e3541c58c48a0195b318c26b3616e2b3"
+  url "https://github.com/mark3labs/kit/archive/refs/tags/v0.124.2.tar.gz"
+  sha256 "e33743c9be80d41e03c46635b44de1af713af0843fd2c12e44c507ff515139f0"
   license "MIT"
 
   bottle do
