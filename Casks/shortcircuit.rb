@@ -1,11 +1,8 @@
 cask "shortcircuit" do
-  arch arm: "arm64", intel: "x86_64"
+  version "2.2.1"
+  sha256 "bb012c71ca5e2bb5748e54ccd875c0452d5703cb27177af8f975b9ca87de965f"
 
-  version "2.2.0"
-  sha256 arm:   "b13ed2bf673f601b3e4c1e73558206a8f98c8667fa59472b52c75d8ab3385572",
-         intel: "8e3844a6be79ba9b4129b07ccbe12c9fff0bf14d5355a58ba899da77eae4843f"
-
-  url "https://github.com/mgoodness/shortcircuit/releases/download/v#{version}/shortcircuit-#{arch}.app.tar.gz"
+  url "https://github.com/mgoodness/shortcircuit/releases/download/v#{version}/shortcircuit-universal2.app.tar.gz"
   name "Short Circuit"
   desc "Find shortest path using Tripwire and Eve data"
   homepage "https://github.com/mgoodness/shortcircuit"
@@ -16,7 +13,7 @@ cask "shortcircuit" do
   end
 
   auto_updates false
-  depends_on :macos
+  depends_on macos: :monterey
 
   app "Short Circuit.app"
 
