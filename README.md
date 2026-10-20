@@ -10,7 +10,13 @@
 
 | Cask | Description | Upstream |
 | --- | --- | --- |
+| [pyfa](Casks/pyfa.rb) | Fitting tool for EVE Online | [pyfa-org/Pyfa](https://github.com/pyfa-org/Pyfa) |
 | [shortcircuit](Casks/shortcircuit.rb) | Find shortest path using Tripwire and Eve data | [mgoodness/shortcircuit](https://github.com/mgoodness/shortcircuit) |
+
+`pyfa` shadows a disabled cask of the same name in `homebrew-cask`, so install
+it fully qualified: `brew install --cask mgoodness/tap/pyfa`. Like
+`shortcircuit`, it is unsigned, so Gatekeeper needs the one-time approval
+covered in its caveats.
 
 ## How do I install these formulae?
 
