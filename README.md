@@ -12,11 +12,13 @@
 | --- | --- | --- |
 | [pyfa](Casks/pyfa.rb) | Fitting tool for EVE Online | [pyfa-org/Pyfa](https://github.com/pyfa-org/Pyfa) |
 | [shortcircuit](Casks/shortcircuit.rb) | Find shortest path using Tripwire and Eve data | [mgoodness/shortcircuit](https://github.com/mgoodness/shortcircuit) |
+| [theorycrafter](Casks/theorycrafter.rb) | Fitting tool for EVE Online with doctrines and a fit optimizer | [Theorycrafter](https://theorycrafter.pro/) |
 
 `pyfa` shadows a disabled cask of the same name in `homebrew-cask`, so install
-it fully qualified: `brew install --cask mgoodness/tap/pyfa`. Like
-`shortcircuit`, it is unsigned, so Gatekeeper needs the one-time approval
-covered in its caveats.
+it fully qualified: `brew install --cask mgoodness/tap/pyfa`.
+
+None of these casks are signed or notarized by Apple, so Gatekeeper needs
+a one-time approval on first launch — see each cask's caveats.
 
 ## How do I install these formulae?
 
