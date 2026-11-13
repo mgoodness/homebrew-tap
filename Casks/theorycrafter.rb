@@ -1,6 +1,6 @@
 cask "theorycrafter" do
-  version "1.9.14"
-  sha256 "db5887b7f47ea6e4576f2f083d195778815dfc46359e3bceb92bc18e892352f1"
+  version "1.9.15"
+  sha256 "ff528195ec06ccb581a141db0b4fdf6dc25412fd5a3ea4f6f2110ec011d72678"
 
   url "https://theorycrafter.pro/releases/#{version}/Theorycrafter-#{version}-macos-aarch64.dmg"
   name "Theorycrafter"
